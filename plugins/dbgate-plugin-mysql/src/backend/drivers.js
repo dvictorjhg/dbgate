@@ -199,6 +199,10 @@ const drivers = driverBases.map(driverBase => ({
     const { rows } = await this.query(dbhan, 'show databases');
     return rows.map(x => ({ name: x.Database }));
   },
+  async listSchemas(dbhan) {
+    const { rows } = await this.query(dbhan, 'select schema_name as schemaName from information_schema.schemata');
+    return rows;
+  },
   async writeTable(dbhan, name, options) {
     // @ts-ignore
     return createBulkInsertStreamBase(this, stream, dbhan, name, options);

@@ -79,12 +79,13 @@ function getParametersSqlString(parameters = []) {
 
 class Analyser extends DatabaseAnalyser {
   constructor(dbhan, driver, version) {
+    console.log('@dvictorjhg 📦 Analyser.constructor().dbhan:', dbhan);
     super(dbhan, driver, version);
   }
 
   createQuery(resFileName, typeFields, replacements = {}) {
     let res = sql[resFileName];
-    res = res.replace('#DATABASE#', this.dbhan.database);
+    res = res.replaceAll('#DATABASE#', this.dbhan.database ?? 'undefined');
     return super.createQuery(res, typeFields, replacements);
   }
 
@@ -120,6 +121,7 @@ class Analyser extends DatabaseAnalyser {
   async _runAnalysis() {
     this.feedback({ analysingMessage: 'Loading tables' });
     const tables = await this.analyserQuery('tables', ['tables']);
+    console.log('@dvictorjhg 📦 Analyser._runAnalysis().tables:', tables);
     this.feedback({ analysingMessage: 'Loading columns' });
     const columns = await this.analyserQuery('columns', ['tables', 'views']);
     this.feedback({ analysingMessage: 'Loading primary keys' });
@@ -238,6 +240,8 @@ class Analyser extends DatabaseAnalyser {
         })),
     };
     this.feedback({ analysingMessage: null });
+
+    // console.log('@dvictorjhg 📦 Analyser._runAnalysis().res:', res);
     return res;
   }
 

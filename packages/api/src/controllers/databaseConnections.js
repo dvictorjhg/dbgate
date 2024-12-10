@@ -48,19 +48,20 @@ module.exports = {
   },
 
   handle_structure(conid, database, { structure }) {
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
+    console.log('@dvictorjhg 🧬 handle_structure:', { conid, database, existing, structure });
     if (!existing) return;
     existing.structure = structure;
     socket.emitChanged('database-structure-changed', { conid, database });
   },
   handle_structureTime(conid, database, { analysedTime }) {
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (!existing) return;
     existing.analysedTime = analysedTime;
     socket.emitChanged(`database-status-changed`, { conid, database });
   },
   handle_version(conid, database, { version }) {
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (!existing) return;
     existing.serverVersion = version;
     socket.emitChanged(`database-server-version-changed`, { conid, database });
@@ -77,7 +78,7 @@ module.exports = {
   },
   handle_status(conid, database, { status }) {
     // console.log('HANDLE SET STATUS', status);
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (!existing) return;
     if (existing.status && status && existing.status.counter > status.counter) return;
     existing.status = status;
@@ -87,7 +88,7 @@ module.exports = {
   handle_ping() {},
 
   async ensureOpened(conid, database) {
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (existing) return existing;
     const connection = await connections.getCore({ conid });
     if (connection.passwordMode == 'askPassword' || connection.passwordMode == 'askUser') {
@@ -127,6 +128,13 @@ module.exports = {
       if (handleProcessCommunication(message, subprocess)) return;
       if (newOpened.disconnected) return;
       this[`handle_${msgtype}`](conid, database, message);
+      if (msgtype === 'schemaList') console.log('@dvictorjhg 🧬 `handle_${msgtype}`:', `handle_${msgtype}`);
+      if (msgtype === 'schemaList')
+        console.log('@dvictorjhg 🧬 { conid, database, message }:', {
+          conid,
+          database,
+          message: JSON.stringify(message, null, 2),
+        });
     });
     subprocess.on('exit', () => {
       if (newOpened.disconnected) return;
@@ -144,6 +152,7 @@ module.exports = {
 
   /** @param {import('dbgate-types').OpenedDatabaseConnection} conn */
   sendRequest(conn, message) {
+    console.log('@dvictorjhg 🧬 databaseConnections.sendRequest:', { conn, message });
     const msgid = crypto.randomUUID();
     const promise = new Promise((resolve, reject) => {
       this.requests[msgid] = [resolve, reject];
@@ -293,7 +302,7 @@ module.exports = {
       };
     }
     testConnectionPermission(conid, req);
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (existing) {
       return {
         ...existing.status,
@@ -316,7 +325,7 @@ module.exports = {
   ping_meta: true,
   async ping({ conid, database }, req) {
     testConnectionPermission(conid, req);
-    let existing = this.opened.find(x => x.conid == conid && x.database == database);
+    let existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
 
     if (existing) {
       try {
@@ -364,7 +373,7 @@ module.exports = {
   },
 
   close(conid, database, kill = true) {
-    const existing = this.opened.find(x => x.conid == conid && x.database == database);
+    const existing = this.opened.find(x => x.conid == conid && (database ? x.database == database : true));
     if (existing) {
       existing.disconnected = true;
       if (kill) {

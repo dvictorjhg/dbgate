@@ -1,3 +1,3 @@
 module.exports = `
-SHOW PROCEDURE STATUS WHERE Db = '#DATABASE#'
+SHOW PROCEDURE STATUS WHERE (Db = '#DATABASE#' OR '#DATABASE#' = 'undefined')
 `;

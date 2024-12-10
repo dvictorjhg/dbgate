@@ -170,6 +170,7 @@ export async function apiCall(
     const resp = await electron.invoke(route.replace('/', '-'), args);
     return await processApiResponse(route, args, resp);
   } else {
+    console.log('@dvictorjhg 🔤 apiCall.`${resolveApi()}/${route}`:', `${resolveApi()}/${route}`);
     const resp = await fetch(`${resolveApi()}/${route}`, {
       method: 'POST',
       cache: 'no-cache',

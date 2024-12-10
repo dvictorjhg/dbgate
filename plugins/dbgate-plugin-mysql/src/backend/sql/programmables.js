@@ -1,5 +1,6 @@
 module.exports = `
 select 
+    ROUTINE_SCHEMA as Db,
     ROUTINE_NAME as pureName,
     ROUTINE_TYPE as objectType,
     COALESCE(LAST_ALTERED, CREATED) as modifyDate,
@@ -7,5 +8,5 @@ select
     ROUTINE_DEFINITION as routineDefinition,
     IS_DETERMINISTIC as isDeterministic
 from information_schema.routines
-where ROUTINE_SCHEMA = '#DATABASE#' and ROUTINE_NAME =OBJECT_ID_CONDITION
+where (ROUTINE_SCHEMA = '#DATABASE#' OR '#DATABASE#' = 'undefined') and ROUTINE_NAME =OBJECT_ID_CONDITION
 `;

@@ -54,6 +54,7 @@ async function checkedAsyncCall(promise) {
 let loadingModel = false;
 
 async function handleFullRefresh() {
+  console.log('@dvictorjhg 🧬 handleFullRefresh START');
   if (storedConnection.useSeparateSchemas && !isCompositeDbName(dbhan?.database)) {
     resolveAnalysedPromises();
     // skip loading DB structure
@@ -70,6 +71,10 @@ async function handleFullRefresh() {
   setStatusName('ok');
 
   loadingModel = false;
+
+  console.log('@dvictorjhg 🧬 handleFullRefresh:', { driver, analysedStructure, analysedTime });
+  console.log('@dvictorjhg 🧬 handleFullRefresh END');
+
   resolveAnalysedPromises();
 }
 
@@ -127,6 +132,7 @@ async function readVersion() {
 }
 
 async function handleConnect({ connection, structure, globalSettings }) {
+  console.log('@dvictorjhg 🧬 handleConnect:', { connection, structure, globalSettings });
   storedConnection = connection;
   lastPing = new Date().getTime();
 
@@ -168,6 +174,7 @@ function waitConnected() {
 }
 
 function waitStructure() {
+  console.log('@dvictorjhg 🧬 waitStructure.analysedStructure:', analysedStructure);
   if (analysedStructure) return Promise.resolve();
   return new Promise((resolve, reject) => {
     afterAnalyseCallbacks.push([resolve, reject]);
@@ -176,6 +183,7 @@ function waitStructure() {
 
 function resolveAnalysedPromises() {
   for (const [resolve] of afterAnalyseCallbacks) {
+    console.log('@dvictorjhg 🧬 resolveAnalysedPromises.resolve:', resolve);
     resolve();
   }
   afterAnalyseCallbacks = [];
@@ -240,7 +248,9 @@ async function handleSqlSelect({ msgid, select }) {
 async function handleDriverDataCore(msgid, callMethod, { logName }) {
   await waitConnected();
   const driver = requireEngineDriver(storedConnection);
+  console.log('@dvictorjhg 🧬 handleDriverDataCore.driver:', JSON.stringify(driver, null, 2));
   try {
+    console.log('@dvictorjhg 🧬 handleDriverDataCore.callMethod:', JSON.stringify(callMethod, null, 2));
     const result = await callMethod(driver);
     process.send({ msgtype: 'response', msgid, result });
   } catch (err) {

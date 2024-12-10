@@ -53,6 +53,7 @@ export const driverBase = {
 
   async analyseFull(pool, version) {
     const analyser = new this.analyserClass(pool, this, version);
+    console.log('@dvictorjhg 📦 driverBase.analyseFull:', { pool, driverBase: this, version, analyser });
     return analyser.fullAnalysis();
   },
   async analyseSingleObject(pool, name, typeField = 'tables') {

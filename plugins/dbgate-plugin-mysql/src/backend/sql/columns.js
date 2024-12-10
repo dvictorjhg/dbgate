@@ -1,5 +1,6 @@
 module.exports = `
 select 
+	TABLE_SCHEMA as Db,
 	TABLE_NAME as pureName, 
 	COLUMN_NAME as columnName,
 	IS_NULLABLE as isNullable,
@@ -12,6 +13,6 @@ select
 	COLUMN_TYPE as columnType,
 	EXTRA as extra
 from INFORMATION_SCHEMA.COLUMNS
-where TABLE_SCHEMA = '#DATABASE#' and TABLE_NAME =OBJECT_ID_CONDITION
+where (TABLE_SCHEMA = '#DATABASE#' OR '#DATABASE#' = 'undefined') and TABLE_NAME =OBJECT_ID_CONDITION
 order by ORDINAL_POSITION
 `;

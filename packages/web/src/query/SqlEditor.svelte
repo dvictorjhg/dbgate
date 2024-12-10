@@ -38,7 +38,7 @@
 
   $: effect = useEffect(() => {
     const editor = domEditor?.getEditor();
-    if ($tabVisible && conid && database && !readOnly && editor) {
+    if ($tabVisible && conid && !readOnly && editor) {
       return mountCodeCompletion({
         conid,
         database,

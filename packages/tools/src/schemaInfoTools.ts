@@ -38,6 +38,7 @@ export function extractSchemaNameFromComposite(name: string) {
 }
 
 export function dbNameLogCategory(database: string): string {
+  console.log('@dvictorjhg 📦 dbNameLogCategory:', { database });
   if (isCompositeDbName(database)) {
     return '~composite';
   }

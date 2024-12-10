@@ -11,6 +11,7 @@ import _uniq from 'lodash/uniq';
 import _keys from 'lodash/keys';
 
 export function addTableDependencies(db: DatabaseInfo): DatabaseInfo {
+  console.log('@dvictorjhg 📦 structureTools.addTableDependencies(db): ', db);
   if (!db.tables) {
     return db;
   }
@@ -119,6 +120,7 @@ function fillDatabaseExtendedInfo(db: DatabaseInfo): DatabaseInfo {
 }
 
 export function extendDatabaseInfo(db: DatabaseInfo): DatabaseInfo {
+  console.log('@dvictorjhg 📦 structureTools.extendDatabaseInfo(db): ', db);
   return fillDatabaseExtendedInfo(addTableDependencies(db));
 }
 

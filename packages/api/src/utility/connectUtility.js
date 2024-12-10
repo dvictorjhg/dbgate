@@ -51,9 +51,20 @@ async function connectUtility(driver, storedConnection, connectionMode, addition
   const connectionLoaded = await loadConnection(driver, storedConnection, connectionMode);
 
   const connection = {
-    database: connectionLoaded.defaultDatabase,
+    database: driver.engine !== 'mysql@dbgate-plugin-mysql' ? connectionLoaded.defaultDatabase : undefined,
     ...decryptConnection(connectionLoaded),
   };
+
+  console.log('@dvictorjhg connectUtility:', {
+    processEnv: process.env,
+    engineIsMysql: driver.engine === 'mysql@dbgate-plugin-mysql',
+    driver,
+    storedConnection,
+    connectionMode,
+    additionalOptions,
+    connectionLoaded,
+    connection,
+  });
 
   if (!connection.port && driver.defaultPort) connection.port = driver.defaultPort.toString();
 

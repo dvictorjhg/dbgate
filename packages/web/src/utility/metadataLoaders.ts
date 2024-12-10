@@ -6,12 +6,15 @@ import { extendDatabaseInfo } from 'dbgate-tools';
 import { setLocalStorage } from '../utility/storageCache';
 import { apiCall, apiOff, apiOn } from './api';
 
-const databaseInfoLoader = ({ conid, database, modelTransFile }) => ({
-  url: 'database-connections/structure',
-  params: { conid, database, modelTransFile },
-  reloadTrigger: { key: `database-structure-changed`, conid, database },
-  transform: extendDatabaseInfo,
-});
+const databaseInfoLoader = ({ conid, database, modelTransFile }) => {
+  console.log('@dvictorjhg 📦 metadataLoaders.databaseInfoLoader:', { conid, database, modelTransFile });
+  return {
+    url: 'database-connections/structure',
+    params: { conid, database, modelTransFile },
+    reloadTrigger: { key: `database-structure-changed`, conid, database },
+    transform: extendDatabaseInfo,
+  };
+};
 
 const schemaListLoader = ({ conid, database }) => ({
   url: 'database-connections/schema-list',

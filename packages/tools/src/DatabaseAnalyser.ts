@@ -70,7 +70,9 @@ export class DatabaseAnalyser {
   }
 
   async fullAnalysis() {
-    logger.debug(`Performing full analysis, DB=${dbNameLogCategory(this.dbhan.database)}, engine=${this.driver.engine}`);
+    logger.debug(
+      `Performing full analysis, DB=${dbNameLogCategory(this.dbhan.database)}, engine=${this.driver.engine}`
+    );
     const res = this.addEngineField(await this._runAnalysis());
     // console.log('FULL ANALYSIS', res);
     return res;
@@ -209,6 +211,16 @@ export class DatabaseAnalyser {
   }
 
   createQueryCore(template, typeFields) {
+    console.log(
+      {
+        template,
+        typeFields,
+        singleObjectFilter: this.singleObjectFilter,
+        singleObjectId: this.singleObjectId,
+        modifications: this.modifications,
+      },
+      '@dvictorjhg 📦 createQueryCore'
+    );
     // let res = template;
     if (this.singleObjectFilter) {
       const { typeField } = this.singleObjectFilter;
@@ -229,6 +241,7 @@ export class DatabaseAnalyser {
     if (filterIds.length == 0) {
       return null;
     }
+    console.log({ filterIds }, '@dvictorjhg 📦 createQueryCore');
     return template.replace(/=OBJECT_ID_CONDITION/g, ` in (${filterIds.map(x => `'${x}'`).join(',')})`);
   }
 
@@ -327,7 +340,9 @@ export class DatabaseAnalyser {
   }
 
   async analyserQuery(template, typeFields, replacements = {}) {
+    logger.debug({ template, typeFields, replacements }, '@dvictorjhg 📦 analyserQuery');
     const sql = this.createQuery(template, typeFields, replacements);
+    logger.debug({ sql }, '@dvictorjhg 📦 analyserQuery.sql:');
 
     if (!sql) {
       return {

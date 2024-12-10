@@ -1,12 +1,15 @@
 export default function analyseQuerySources(sql, sourceNames) {
   const upperSourceNames = sourceNames.map(x => x.toUpperCase());
+  console.log('@dvictorjhg 🔤 analyseQuerySources.upperSourceNames:', upperSourceNames);
   const tokens = sql.split(/\s+/);
+  console.log('@dvictorjhg 🔤 analyseQuerySources.tokens:', tokens);
   const res = [];
   for (let i = 0; i < tokens.length; i += 1) {
     const lastWordMatch = tokens[i].match(/([^.]+)$/);
     if (lastWordMatch) {
       const word = lastWordMatch[1];
       const wordUpper = word.toUpperCase();
+      console.log('@dvictorjhg 🔤 analyseQuerySources.wordUpper:', wordUpper);
       if (upperSourceNames.includes(wordUpper)) {
         const preWord = tokens[i - 1];
         if (preWord && /^((join)|(from)|(update)|(delete)|(insert))$/i.test(preWord)) {
